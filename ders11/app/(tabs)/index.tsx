@@ -10,7 +10,7 @@ export default function HomeScreen() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSignUp = async () => {
+  const handleSignUp =  () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
           AsyncStorage.setItem('userToken', userCredential.user.uid);
@@ -23,7 +23,7 @@ export default function HomeScreen() {
       });
   };
 
-  const handleSignIn = async () => {
+  const handleSignIn =  () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
     
