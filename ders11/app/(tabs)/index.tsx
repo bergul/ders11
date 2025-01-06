@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const[error, setError] = useState('');  
   const router = useRouter();
 ///www.notpaylas.com.tr/firebaseodev
   const handleSignUp =  () => {
@@ -19,7 +20,7 @@ export default function HomeScreen() {
         
       })
       .catch((error) => {
-        Alert.alert('Kayıt Hatası', error.message);
+      setError(error.message);  
       });
   };
 
@@ -33,7 +34,7 @@ export default function HomeScreen() {
         
       })
       .catch((error) => {
-        Alert.alert('Giriş Hatası', error.message);
+      setError(error.message);  
       });
   };
 
@@ -41,6 +42,7 @@ export default function HomeScreen() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
       <View style={styles.titleContainer}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'black' }}>Welcome to Crypto</Text>
+        <Text>{error}</Text>
         <TextInput
           placeholder='Email Adres'
           value={email}
