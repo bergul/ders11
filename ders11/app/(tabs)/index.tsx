@@ -9,7 +9,7 @@ export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-
+///www.notpaylas.com.tr/firebaseodev
   const handleSignUp =  () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
