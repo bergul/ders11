@@ -6,7 +6,8 @@ import { Link, useRouter, useSegments } from 'expo-router';
 import app from '../../firebaseconfig';
 
 import { getAuth, signOut } from 'firebase/auth';
-import { getDatabase, ref, push, set } from 'firebase/database';
+import { getDatabase, ref, push, set, get } from 'firebase/database';
+import { TextInput } from 'react-native-gesture-handler';
 
 
 
@@ -14,7 +15,9 @@ export default function TabTwoScreen() {
   const [mail, setMail] = useState('');
   const router = useRouter();
   const segment = useSegments()
-
+ const[ad, setAd] = useState('');
+ const[soyad, setSoyad] = useState('');
+ const [isimler, setIsimler] = useState('');  
   useEffect(() => {
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem('userToken');
@@ -29,6 +32,7 @@ export default function TabTwoScreen() {
     };
 
     checkAuth();
+    isimleriGetir();
   }, [segment]);
 
   const handleSignOut = async () => {
@@ -38,14 +42,28 @@ export default function TabTwoScreen() {
     await AsyncStorage.removeItem('userEmail');
     router.push('/');
   };
+  const isimleriGetir = async () => {
+    const database= getDatabase(app.app); 
+    const referans = ref(database, '/demolar');
+    const snapshot = await get(referans);
+    if (snapshot.exists()) {
+      snapshot.forEach((item)=>{
+        const key = item.key;
+        setIsimler(key);
 
+
+      });
+    } else {
+      console.log('No data available');
+    }
+  };
   function testekle(): void {
    const referans = ref(getDatabase(app.app), '/demolar');
    const newRef = push(referans);
    set(newRef, {
-      ad: 'test',
-      soyad: 'test2'
-    });
+      "ad":ad
+       ,"soyad":soyad}
+    );
   }
 
   return (
@@ -54,6 +72,10 @@ export default function TabTwoScreen() {
       <Link href="../user/"  >git</Link>
       <Button title="Sign Out" onPress={handleSignOut} />
       <Button title="Go to Home" onPress={testekle} />
+      <TextInput value={ad} placeholder="Ad" onChangeText={setAd} />
+      <TextInput value={soyad} placeholder="Soyad" onChangeText={setSoyad} />
+      <Button title="Ekle" onPress={testekle} />
+      {isimler}
     </View>
   );
 }
