@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import auth from '../../firebaseconfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import app from '../../firebaseconfig';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -54,9 +54,13 @@ export default function HomeScreen() {
       return;
     }
 
+    const auth = getAuth(app.app);
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
           AsyncStorage.setItem('userToken', userCredential.user.uid);
+          if (userCredential.user.email) {
+            AsyncStorage.setItem('userEmail', userCredential.user.email);
+          }
           Alert.alert('Kayıt Başarılı', 'Kayıt yapıldı');
           router.push('/explore');
         
@@ -67,11 +71,15 @@ export default function HomeScreen() {
   };
 
   const handleSignIn =  () => {
-    
+    const auth = getAuth(app.app);
+   
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
     
           AsyncStorage.setItem('userToken', userCredential.user.uid);
+          if (userCredential.user.email) {
+            AsyncStorage.setItem('userEmail', userCredential.user.email);
+          }
           Alert.alert('Giriş Başarılı', 'Giriş yapıldı');
           router.push('/explore');
         
