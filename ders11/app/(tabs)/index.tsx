@@ -5,6 +5,42 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+const validatePassword = (password: string, email: string): string[] => {
+  const errors: string[] = [];
+  const forbiddenNumbers = ["1903", "1905", "1907", "53", "61"];
+  const emailParts = email.split('@')[0].match(/.{4,}/g) || [];
+
+  if (password.length < 6) {
+    errors.push("Password must be at least 6 characters long.");
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter.");
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter.");
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number.");
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    errors.push("Password must contain at least one special character.");
+  }
+  forbiddenNumbers.forEach(num => {
+    if (password.includes(num)) {
+      errors.push(`Password cannot contain the number ${num}.`);
+    }
+  });
+  emailParts.forEach(part => {
+    if (password.includes(part)) {
+      errors.push(`Password cannot contain part of the email: ${part}.`);
+    }
+  });
+
+  return errors;
+};
+
+
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,6 +48,12 @@ export default function HomeScreen() {
   const router = useRouter();
 ///www.notpaylas.com.tr/firebaseodev
   const handleSignUp =  () => {
+    const errors = validatePassword(password, email);
+    if (errors.length > 0) {
+      setError(errors.join('\n'));
+      return;
+    }
+
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
           AsyncStorage.setItem('userToken', userCredential.user.uid);
@@ -25,6 +67,7 @@ export default function HomeScreen() {
   };
 
   const handleSignIn =  () => {
+    
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
     
