@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter, useSegments } from 'expo-router';
 
@@ -7,7 +7,7 @@ import app from '../../firebaseconfig';
 
 import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, ref, push, set, get } from 'firebase/database';
-import { TextInput } from 'react-native-gesture-handler';
+
 
 
 
@@ -15,9 +15,9 @@ export default function TabTwoScreen() {
   const [mail, setMail] = useState('');
   const router = useRouter();
   const segment = useSegments()
- const[ad, setAd] = useState('');
- const[soyad, setSoyad] = useState('');
- const [isimler, setIsimler] = useState('');  
+  const [ad, setAd] = useState('');
+  const [soyad, setSoyad] = useState('');
+  const [isimler, setIsimler] = useState('');
   useEffect(() => {
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem('userToken');
@@ -36,18 +36,18 @@ export default function TabTwoScreen() {
   }, [segment]);
 
   const handleSignOut = async () => {
-   const auth = getAuth(app.app);
+    const auth = getAuth(app.app);
     await signOut(auth);
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('userEmail');
     router.push('/');
   };
   const isimleriGetir = async () => {
-    const database= getDatabase(app.app); 
+    const database = getDatabase(app.app);
     const referans = ref(database, '/demolar');
     const snapshot = await get(referans);
     if (snapshot.exists()) {
-      snapshot.forEach((item)=>{
+      snapshot.forEach((item) => {
         const key = item.key;
         setIsimler(key);
 
@@ -58,11 +58,12 @@ export default function TabTwoScreen() {
     }
   };
   function testekle(): void {
-   const referans = ref(getDatabase(app.app), '/demolar');
-   const newRef = push(referans);
-   set(newRef, {
-      "ad":ad
-       ,"soyad":soyad}
+    const referans = ref(getDatabase(app.app), '/demolar');
+    const newRef = push(referans);
+    set(newRef, {
+      "ad": ad
+      , "soyad": soyad
+    }
     );
   }
 
