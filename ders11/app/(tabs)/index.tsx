@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import app from '../../firebaseconfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { TextInput } from 'react-native-gesture-handler';
 
 const validatePassword = (password: string, email: string): string[] => {
   const errors: string[] = [];
@@ -44,10 +44,10 @@ const validatePassword = (password: string, email: string): string[] => {
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const[error, setError] = useState('');  
+  const [error, setError] = useState('');
   const router = useRouter();
-///www.notpaylas.com.tr/firebaseodev
-  const handleSignUp =  () => {
+  ///www.notpaylas.com.tr/firebaseodev
+  const handleSignUp = () => {
     const errors = validatePassword(password, email);
     if (errors.length > 0) {
       setError(errors.join('\n'));
@@ -56,36 +56,36 @@ export default function HomeScreen() {
 
     const auth = getAuth(app.app);
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-          AsyncStorage.setItem('userToken', userCredential.user.uid);
-          if (userCredential.user.email) {
-            AsyncStorage.setItem('userEmail', userCredential.user.email);
-          }
-          Alert.alert('Kayıt Başarılı', 'Kayıt yapıldı');
-          router.push('/explore');
-        
+      .then((userCredential) => {
+        AsyncStorage.setItem('userToken', userCredential.user.uid);
+        if (userCredential.user.email) {
+          AsyncStorage.setItem('userEmail', userCredential.user.email);
+        }
+        Alert.alert('Kayıt Başarılı', 'Kayıt yapıldı');
+        router.push('/explore');
+
       })
       .catch((error) => {
-      setError(error.message);  
+        setError(error.message);
       });
   };
 
-  const handleSignIn =  () => {
+  const handleSignIn = () => {
     const auth = getAuth(app.app);
-   
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-    
-          AsyncStorage.setItem('userToken', userCredential.user.uid);
-          if (userCredential.user.email) {
-            AsyncStorage.setItem('userEmail', userCredential.user.email);
-          }
-          Alert.alert('Giriş Başarılı', 'Giriş yapıldı');
-          router.push('/explore');
-        
+
+        AsyncStorage.setItem('userToken', userCredential.user.uid);
+        if (userCredential.user.email) {
+          AsyncStorage.setItem('userEmail', userCredential.user.email);
+        }
+        Alert.alert('Giriş Başarılı', 'Giriş yapıldı');
+        router.push('/explore');
+
       })
       .catch((error) => {
-      setError(error.message);  
+        setError(error.message);
       });
   };
 
