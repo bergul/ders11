@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter, useSegments } from 'expo-router';
 
@@ -7,7 +7,7 @@ import app from '../../firebaseconfig';
 
 import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, ref, push, set, get } from 'firebase/database';
-
+import { TextInput } from 'react-native-gesture-handler';
 
 
 
